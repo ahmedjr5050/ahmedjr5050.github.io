@@ -1,38 +1,437 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ahmed Sabry — Mobile Engineer</title>
+<meta name="description" content="Ahmed Sabry — Flutter / mobile engineer building production-grade apps: offline-first sync, clean architecture, anti-fraud field systems." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#ECEDEF;
+    --paper-2:#F6F7F8;
+    --surface:#FFFFFF;
+    --ink:#14171B;
+    --ink-2:#3A4047;
+    --muted:#6A7178;
+    --line:#DADDE1;
+    --line-2:#E6E8EB;
+    --signal:#2347E6;
+    --signal-ink:#1A35B5;
+    --live:#16A34A;
+    --display:"Space Grotesk",sans-serif;
+    --body:"Inter",sans-serif;
+    --mono:"IBM Plex Mono",monospace;
+    --maxw:1120px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+  /* ---- eyebrow / section labels ---- */
+  .eyebrow{
+    display:flex;align-items:center;gap:12px;
+    font-family:var(--mono);font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:28px;
+  }
+  .eyebrow .idx{color:var(--signal-ink)}
+  .eyebrow .rule{flex:1;height:1px;background:var(--line)}
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  /* ---- nav ---- */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(236,237,239,.82);
+    backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:600}
+  .brand .tag{
+    width:34px;height:34px;display:grid;place-items:center;
+    border:1px solid var(--ink);border-radius:8px;font-size:13px;letter-spacing:.04em;
+  }
+  .brand .coord{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--ink-2);transition:color .2s}
+  .nav-links a:hover{color:var(--signal-ink)}
+  .nav-toggle{display:none;background:none;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-family:var(--mono);font-size:12px;cursor:pointer}
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="/">
+  /* ---- hero ---- */
+  header.hero{position:relative;padding:96px 0 84px;overflow:hidden}
+  .grid-bg{
+    position:absolute;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-2) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line-2) 1px,transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 70% at 70% 25%,#000 0%,transparent 78%);
+            mask-image:radial-gradient(ellipse 80% 70% at 70% 25%,#000 0%,transparent 78%);
+    opacity:.7;
+  }
+  .crosshair{position:absolute;width:10px;height:10px;z-index:1;pointer-events:none}
+  .crosshair::before,.crosshair::after{content:"";position:absolute;background:var(--signal);opacity:.45}
+  .crosshair::before{left:50%;top:0;width:1px;height:100%;transform:translateX(-.5px)}
+  .crosshair::after{top:50%;left:0;height:1px;width:100%;transform:translateY(-.5px)}
+  .hero-inner{position:relative;z-index:2;max-width:840px}
+  .status{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-2);background:var(--surface);border:1px solid var(--line);
+    padding:7px 13px;border-radius:100px;margin-bottom:30px;
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--live);position:relative}
+  .dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;background:var(--live);opacity:.35;animation:pulse 2.4s var(--ease) infinite}
+  @keyframes pulse{0%{transform:scale(.6);opacity:.5}70%{transform:scale(2.2);opacity:0}100%{opacity:0}}
+  h1{
+    font-family:var(--display);font-weight:600;
+    font-size:clamp(40px,7vw,76px);line-height:1.02;letter-spacing:-.02em;
+    margin-bottom:26px;
+  }
+  h1 .accent{color:var(--signal-ink)}
+  .lede{font-size:clamp(17px,2vw,20px);color:var(--ink-2);max-width:600px;margin-bottom:38px}
+  .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:46px}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--mono);font-size:13px;letter-spacing:.03em;
+    padding:13px 20px;border-radius:10px;transition:transform .2s var(--ease),background .2s,border-color .2s;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:var(--ink);color:var(--paper-2)}
+  .btn-primary:hover{background:var(--signal-ink)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ink)}
+  .arrow{transition:transform .2s var(--ease)}
+  .btn:hover .arrow{transform:translate(2px,-2px)}
+  .facts{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--line)}
+  .fact{padding:18px 28px 4px 0;margin-right:28px;border-right:1px solid var(--line)}
+  .fact:last-child{border-right:none}
+  .fact .k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .fact .v{font-family:var(--display);font-weight:500;font-size:19px;margin-top:4px}
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="portfolio">
+  /* ---- sections ---- */
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  .sec-head{margin-bottom:48px}
+  .sec-head h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.01em}
+  .sec-head p{color:var(--muted);max-width:540px;margin-top:12px}
 
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="my_portfolio">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  /* ---- projects ---- */
+  .project{
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    padding:30px;margin-bottom:22px;
+    display:grid;grid-template-columns:200px 1fr;gap:34px;
+    transition:border-color .25s,transform .25s var(--ease),box-shadow .25s;
+  }
+  .project:hover{border-color:#C3C8CE;transform:translateY(-3px);box-shadow:0 18px 40px -28px rgba(20,23,27,.4)}
+  .p-meta{border-right:1px solid var(--line-2);padding-right:30px}
+  .p-index{font-family:var(--mono);font-size:12px;color:var(--signal-ink);letter-spacing:.08em}
+  .p-role{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:18px;display:block}
+  .p-where{font-family:var(--display);font-weight:500;font-size:15px;margin-top:3px}
+  .p-stat{margin-top:22px}
+  .p-stat .num{font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.01em}
+  .p-stat .cap{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:2px}
+  .p-body h3{font-family:var(--display);font-weight:600;font-size:23px;letter-spacing:-.01em;display:flex;align-items:center;gap:11px}
+  .p-kind{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:400}
+  .p-body p{color:var(--ink-2);margin-top:12px;font-size:15.5px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .chip{font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;color:var(--ink-2);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:5px 10px}
+  .p-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .p-link{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--signal-ink);border:1px solid var(--line);border-radius:8px;padding:8px 13px;transition:border-color .2s,background .2s}
+  .p-link:hover{border-color:var(--signal-ink);background:var(--paper-2)}
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  /* ---- stack ---- */
+  .stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .stack-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px}
+  .stack-card .label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--signal-ink);margin-bottom:16px;display:block}
+  .stack-card ul{list-style:none}
+  .stack-card li{padding:8px 0;border-bottom:1px solid var(--line-2);font-size:15px;color:var(--ink-2)}
+  .stack-card li:last-child{border-bottom:none}
 
-  <title>my_portfolio</title>
-  <link rel="manifest" href="manifest.json">
+  /* ---- about ---- */
+  .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:56px}
+  .about-grid p{color:var(--ink-2);margin-bottom:18px}
+  .about-grid p:last-child{margin-bottom:0}
+  .meta-list{border-top:1px solid var(--line)}
+  .meta-row{display:flex;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid var(--line-2)}
+  .meta-row .mk{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .meta-row .mv{text-align:right;font-size:15px}
+
+  /* ---- contact ---- */
+  .contact{text-align:left}
+  .contact h2{font-family:var(--display);font-weight:600;font-size:clamp(32px,5vw,58px);letter-spacing:-.02em;line-height:1.05;margin-bottom:22px}
+  .contact .mailto{color:var(--signal-ink);border-bottom:2px solid transparent;transition:border-color .2s}
+  .contact .mailto:hover{border-color:var(--signal-ink)}
+  .contact-links{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
+
+  /* ---- footer ---- */
+  footer{border-top:1px solid var(--line);padding:30px 0}
+  .foot-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--muted)}
+
+  /* ---- reveal ---- */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---- responsive ---- */
+  @media (max-width:820px){
+    .nav-links{
+      position:fixed;inset:64px 0 auto 0;flex-direction:column;align-items:flex-start;gap:0;
+      background:var(--paper);border-bottom:1px solid var(--line);padding:8px 28px 18px;
+      transform:translateY(-120%);transition:transform .3s var(--ease);
+    }
+    .nav-links.open{transform:none}
+    .nav-links a{padding:13px 0;width:100%;border-bottom:1px solid var(--line-2);font-size:14px}
+    .nav-toggle{display:inline-block}
+    .project{grid-template-columns:1fr;gap:22px}
+    .p-meta{border-right:none;border-bottom:1px solid var(--line-2);padding-right:0;padding-bottom:22px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .p-stat{margin-top:0}
+    .stack-grid{grid-template-columns:1fr}
+    .about-grid{grid-template-columns:1fr;gap:36px}
+    .meta-row .mv{text-align:right}
+    .fact{padding-right:20px;margin-right:20px}
+  }
+  @media (max-width:480px){
+    .wrap{padding:0 20px}
+    .facts{gap:0}
+    .fact{border-right:none;border-bottom:1px solid var(--line);width:100%;margin-right:0;padding:14px 0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="tag">AS</span>
+      <span>Ahmed Sabry<br><span class="coord">30.0444°N · 31.2357°E</span></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">Menu</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#work">Work</a>
+      <a href="#stack">Stack</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="grid-bg"></div>
+  <span class="crosshair" style="top:120px;left:8%"></span>
+  <span class="crosshair" style="top:280px;right:14%"></span>
+  <div class="wrap hero-inner">
+    <span class="status"><span class="dot"></span>Active · shipping at PC Power</span>
+    <h1>Mobile engineer building <span class="accent">production-grade</span> Flutter apps.</h1>
+    <p class="lede">I design and ship offline-first mobile systems with clean architecture — the kind that hold up in the field, sync under bad networks, and don't break when users do.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#contact">Get in touch <span class="arrow">↗</span></a>
+      <a class="btn btn-ghost" href="https://github.com/ahmedjr5050" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-ghost" href="https://www.linkedin.com/in/ahmed-sabry985730222" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <div class="facts">
+      <div class="fact"><div class="k">Experience</div><div class="v">2+ years</div></div>
+      <div class="fact"><div class="k">Base</div><div class="v">Cairo, EG</div></div>
+      <div class="fact"><div class="k">Focus</div><div class="v">Flutter · Dart</div></div>
+      <div class="fact"><div class="k">Open to</div><div class="v">EU relocation</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="work">
+  <div class="wrap">
+    <div class="eyebrow"><span class="idx">01</span> Selected work <span class="rule"></span></div>
+    <div class="sec-head">
+      <h2>Things I've shipped</h2>
+      <p>A few production projects where the hard part wasn't the screens — it was the system behind them.</p>
+    </div>
+
+    <article class="project reveal">
+      <div class="p-meta">
+        <span class="p-index">PRJ-01</span>
+        <span class="p-role">Primary developer</span>
+        <span class="p-where">PC Power</span>
+        <div class="p-stat"><div class="num">17</div><div class="cap">feature modules</div></div>
+      </div>
+      <div class="p-body">
+        <h3>Motivus <span class="p-kind">Pharma field-force CRM</span></h3>
+        <p>A CRM for medical sales representatives working in the field. Built on clean architecture with an offline-first sync engine so reps can keep working with no signal and reconcile later. Includes an anti-fraud layer that cross-checks GPS and device time to flag spoofed visits, plus a Dio interceptor system that silently recovers expired sessions mid-request.</p>
+        <div class="chips">
+          <span class="chip">Flutter</span><span class="chip">Clean Architecture</span><span class="chip">Offline-first sync</span><span class="chip">GPS anti-fraud</span><span class="chip">Dio interceptors</span><span class="chip">CI/CD</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project reveal">
+      <div class="p-meta">
+        <span class="p-index">PRJ-02</span>
+        <span class="p-role">Mobile developer</span>
+        <span class="p-where">Client work</span>
+        <div class="p-stat"><div class="num">e-com</div><div class="cap">delivered</div></div>
+      </div>
+      <div class="p-body">
+        <h3>NS Edition <span class="p-kind">E-commerce app</span></h3>
+        <p>A full e-commerce experience for the Naguib Selim brand — product catalog, cart, checkout, and order flow built and delivered to the client. Shipped end to end on Flutter.</p>
+        <div class="chips">
+          <span class="chip">Flutter</span><span class="chip">REST APIs</span><span class="chip">State management</span><span class="chip">Payments flow</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project reveal">
+      <div class="p-meta">
+        <span class="p-index">PRJ-03</span>
+        <span class="p-role">Mobile developer</span>
+        <span class="p-where">Shrouk Academy</span>
+        <div class="p-stat"><div class="num">edu</div><div class="cap">platform</div></div>
+      </div>
+      <div class="p-body">
+        <h3>Shrouk Academy <span class="p-kind">Education app</span></h3>
+        <p>A learning app for an education provider, covering course content delivery and the student-facing experience on mobile. Live on both stores.</p>
+        <div class="chips">
+          <span class="chip">Flutter</span><span class="chip">REST APIs</span><span class="chip">Auth</span>
+        </div>
+        <div class="p-links">
+          <a class="p-link" href="https://apps.apple.com/eg/app/id1661759970?l=ar" target="_blank" rel="noopener">App Store <span class="arrow">↗</span></a>
+          <a class="p-link" href="https://play.google.com/store/apps/details?id=eg.edu.sha.shaApp&hl=ar" target="_blank" rel="noopener">Google Play <span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="eyebrow"><span class="idx">02</span> Toolkit <span class="rule"></span></div>
+    <div class="sec-head">
+      <h2>What I work with</h2>
+      <p>Depth in Flutter, with the architecture and platform skills to make apps that actually survive production.</p>
+    </div>
+    <div class="stack-grid">
+      <div class="stack-card reveal">
+        <span class="label">Core</span>
+        <ul>
+          <li>Flutter</li>
+          <li>Dart</li>
+          <li>Clean Architecture</li>
+          <li>State management</li>
+          <li>Responsive UI</li>
+        </ul>
+      </div>
+      <div class="stack-card reveal">
+        <span class="label">Systems</span>
+        <ul>
+          <li>Offline-first &amp; sync</li>
+          <li>REST APIs · Dio</li>
+          <li>Local persistence</li>
+          <li>Session recovery</li>
+          <li>GPS &amp; location logic</li>
+        </ul>
+      </div>
+      <div class="stack-card reveal">
+        <span class="label">Platform &amp; ops</span>
+        <ul>
+          <li>Android / iOS native channels</li>
+          <li>Accessibility &amp; Screen Time APIs</li>
+          <li>Git &amp; code review</li>
+          <li>CI/CD pipelines</li>
+          <li>Play Store / App Store release</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="eyebrow"><span class="idx">03</span> About <span class="rule"></span></div>
+    <div class="about-grid">
+      <div>
+        <div class="sec-head" style="margin-bottom:24px">
+          <h2>Who I am</h2>
+        </div>
+        <p>I'm Ahmed — a Flutter developer based in Cairo. For the last two-plus years I've been building real, shipped mobile apps, currently as the primary developer on Motivus, a field-force CRM at PC Power.</p>
+        <p>What I care about is the part of mobile engineering that isn't visible on screen: architecture that scales past the first feature, sync that works on a train with no signal, and systems that degrade gracefully instead of crashing. I like problems where the requirement is "make it reliable in the real world," not just "make it look right."</p>
+        <p>I'm actively learning German and open to relocating to Europe to keep growing as an engineer.</p>
+      </div>
+      <div>
+        <div class="meta-list">
+          <div class="meta-row"><span class="mk">Role</span><span class="mv">Flutter Developer · PC Power</span></div>
+          <div class="meta-row"><span class="mk">Degree</span><span class="mv">B.Sc. Computer Science, 2023<br><span style="color:var(--muted);font-size:13px">Good with Honors</span></span></div>
+          <div class="meta-row"><span class="mk">Arabic</span><span class="mv">Native</span></div>
+          <div class="meta-row"><span class="mk">English</span><span class="mv">Professional</span></div>
+          <div class="meta-row"><span class="mk">German</span><span class="mv">A2 · learning</span></div>
+          <div class="meta-row"><span class="mk">Status</span><span class="mv">Open to EU relocation</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <div class="eyebrow"><span class="idx">04</span> Contact <span class="rule"></span></div>
+    <h2>Let's build something<br>reliable.</h2>
+    <p style="color:var(--ink-2);max-width:520px">Hiring, freelance, or just want to talk Flutter architecture — reach out. Best at <a class="mailto" href="mailto:ahmedsabry7333@gmail.com">ahmedsabry7333@gmail.com</a>.</p>
+    <div class="contact-links">
+      <a class="btn btn-primary" href="mailto:ahmedsabry7333@gmail.com">Email me <span class="arrow">↗</span></a>
+      <a class="btn btn-ghost" href="https://github.com/ahmedjr5050" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-ghost" href="https://www.linkedin.com/in/ahmed-sabry985730222" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span>© <span id="year"></span> Ahmed Sabry — Mobile Engineer</span>
+    <span>Built with Flutter on the brain · Cairo, EG</span>
+  </div>
+</footer>
+
+<script>
+  // year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // mobile nav
+  var toggle = document.getElementById('navToggle');
+  var links = document.getElementById('navLinks');
+  toggle.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      links.classList.remove('open');
+      toggle.setAttribute('aria-expanded', false);
+    });
+  });
+
+  // scroll reveal
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {threshold:.16});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+</script>
 </body>
 </html>
